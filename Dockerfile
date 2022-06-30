@@ -22,19 +22,23 @@ RUN mkdir -p /project
 RUN chown -R 999:999 /project
 RUN chmod -R 777 /project
 
-RUN npm install -g npm@7.16.0
-RUN npm install -g npm@7.16.0
+RUN npm install -g npm@8.13.1
+RUN npm install -g npm@8.13.1
 
 
+# SER newuser
+# WORKDIR /home/newuser
 
-#USER newuser
-#WORKDIR /home/newuser
 
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | bash -s -- -y
-RUN bash -c "$(curl -sSfL https://release.solana.com/v1.5.7/install)"
+RUN bash -c "$(curl -sSfL https://release.solana.com/v1.10.29/install)"
 RUN . $HOME/.cargo/env
 ENV PATH="/root/.local/share/solana/install/active_release/bin:${PATH}"
 ENV RUST_LOG="solana_runtime::system_instruction_processor=trace,solana_runtime::message_processor=debug,solana_bpf_loader=debug,solana_rbpf=debug"
+
+# install anchor and it's dependencies
+RUN apt-get install pkg-config libudev-dev libssl-dev
+RUN cargo install --git https://github.com/project-serum/anchor anchor-cli --locked
 
 WORKDIR /project
 
